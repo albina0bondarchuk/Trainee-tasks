@@ -6,51 +6,33 @@ export class LogInForm extends Component {
         super(props)
 
         this.state = {
-            authorizationData: {
-                login: '',
-                password: ''
-            },
-            errorMessage:'',
+            login: '',
+            password: '',
+            errorMessage: '',
         }
 
-        this.changeLogin = this.changeLogin.bind(this)
-        this.changePassword = this.changePassword.bind(this)
+        this.handleUserInput = this.handleUserInput.bind(this)
         this.errorMessageCreate = this.errorMessageCreate.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
     }
 
-    changeLogin(e) {
-        this.setState({
-            authorizationData: {
-                ...this.state.authorizationData,
-                login: e.target.value,
-            }
-        })
-        console.log(this.state);
+    handleUserInput = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        this.setState({[name]: value});
     }
 
-    changePassword(e) {
-        this.setState({
-            authorizationData: {
-                ...this.state.authorizationData,
-                password: e.target.value
-            }
-        })
-        console.log(this.state);
-    }
-
-    errorMessageCreate(message) {
-        this.setState({
-            errorMessage: message
-        })
+    errorMessageCreate(text) {
+        this.setState({errorMessage: text})
     }
 
     handleSubmit(e) {
         e.preventDefault();
-
-        if (this.state.authorizationData.name === 'vasil' && this.state.authorizationData.password === 'qwerty') {
+        if (this.state.login === 'Vasil' && this.state.password === 'qwerty') {
             this.props.completeAuthorization()
-        } 
+        } else {
+            this.errorMessageCreate('incorrect login or password')
+        }
     }
 
     render() {
@@ -58,16 +40,26 @@ export class LogInForm extends Component {
             <form onSubmit={this.handleSubmit}>
                 <LogInInput
                     inputName = 'login'
-                    changeValue = {this.changeLogin}
+                    inputType = 'text'
+                    handleUserInput = {this.handleUserInput}
                     errorMessageCreate = {this.errorMessageCreate}
                 />
                 <LogInInput
                     inputName = 'password'
-                    changeValue = {this.changePassword}
+                    inputType = 'password'
+                    handleUserInput = {this.handleUserInput}
                     errorMessageCreate = {this.errorMessageCreate}
-                />
+                /> 
+
                 <span className='message_box'>{this.state.errorMessage}</span>
-                <button type="submit" className='login_submit'>Submit</button>
+
+                { this.state.login && this.state.password ? (
+                    <button type="submit" className='login_submit'>Submit</button>
+                    ) : (
+                        <button type="submit" disabled className='login_submit'>Submit</button>
+                    )
+                }
+                
             </form>
         )
     }

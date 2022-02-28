@@ -16,26 +16,29 @@ export class LogInInput extends Component {
         if (!e.target.value) {
             this.setState({
                 isEmpty: true
+            }, ()=> {
+                this.props.errorMessageCreate('all fields must be filled')
             });
-            this.props.errorMessageCreate('all fields must be filled')
         } else {
             this.setState({
                 isEmpty: false
+            },()=> {
+                this.props.errorMessageCreate('')
             });
-            this.props.changeValue(e)
-            this.props.errorMessageCreate('')
         }
     }
 
     render() {
-        let classList;  
-        this.state.isEmpty ? classList = 'empty' : classList = ''
+        const classList = this.state.isEmpty ? 'empty' : ''
         return(
             <input 
-                onBlur={this.handleBlur}
-                id={this.props.inputName} 
+                onChange = {this.props.handleUserInput}
+                onBlur = {this.handleBlur}
+                id = {this.props.inputName} 
+                type = {this.props.inputType}
+                name = {this.props.inputName} 
+                placeholder = {this.props.inputName} 
                 className = {classList}
-                placeholder={this.props.inputName} 
             />
         )
     }
