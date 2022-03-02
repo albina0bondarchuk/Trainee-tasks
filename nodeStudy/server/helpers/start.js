@@ -7,7 +7,7 @@ async function start(server) {
             useNewUrlParser: true
         })
 
-        server.listen(4400, (err) => {
+        server.listen(8000, (err) => {
             if (err) {
                 return console.log('something bad happened', err)
             }

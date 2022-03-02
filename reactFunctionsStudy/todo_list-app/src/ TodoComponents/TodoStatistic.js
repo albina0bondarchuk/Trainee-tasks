@@ -11,7 +11,7 @@ export function TodoStatistic({todos, filter}) {
             />
 
             <p>completed: <span>{
-                todos.filter(todo => todo.completed).length
+                todos.filter(todo => todo.completed==='true').length
             }</span></p>
         </div>
     )

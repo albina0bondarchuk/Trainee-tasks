@@ -4,10 +4,10 @@ function TodoList({ todos, filter }) {
     
     function filteredTodos(filter='all', todos) {
         if(filter === 'completed') {
-            return todos.filter(todo => todo.completed)
+            return todos.filter(todo => todo.completed==='true')
         }
         if(filter === 'active') {
-            return todos.filter(todo => !todo.completed)
+            return todos.filter(todo => todo.completed==='false')
         } 
 
         return todos
@@ -20,7 +20,7 @@ function TodoList({ todos, filter }) {
                     .map(todo => {
                         return <TodoItem 
                             todo={todo} 
-                            key={todo.id} 
+                            key={todo._id} 
                         />
                     })
             }

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 export function LogInInput({inputName, inputType, handleUserInput, errorMessageCreate}) {
     const [isEmpty, setIsEmty] = useState(false) 
 
-    useEffect((e)=>{
+    useEffect(()=>{
         if (isEmpty) {
             errorMessageCreate('all fields must be filled')
         } else {

@@ -25,7 +25,7 @@ function postLogin(request, response) {
                 result.isValidPassword(params.password).then(function(res){
                     const isPassValid = res
                     if (!isPassValid) {
-                        response.end()
+                        response.end(':(')
                     } else {
                         const token = jwt.sign({id: result.id}, "secret", {expiresIn: '1h'})
                         response.setHeader('autorization', token)

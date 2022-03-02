@@ -1,4 +1,4 @@
-import {useState, useContext} from 'react'
+import {useState, useContext, useEffect} from 'react'
 import { Context } from '../context'
 import { LogInInput } from './LogInInput'
 
@@ -26,11 +26,9 @@ export function LogInForm() {
 
     function handleSubmit(e) {
         e.preventDefault();
-        if (authorization.login === 'Vasil' && authorization.password === 'qwerty') {
-            completeAuthorization()
-        } else {
-            errorMessageCreate('incorrect login or password')
-        }
+        completeAuthorization(authorization.login, authorization.password, () => {
+            errorMessageCreate('incorrect login or password'); 
+        })
     }
 
     return (

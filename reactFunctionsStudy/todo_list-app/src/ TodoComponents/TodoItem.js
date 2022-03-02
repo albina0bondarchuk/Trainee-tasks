@@ -6,7 +6,7 @@ function TodoItem({todo}) {
     const [input, setInput] = useState(todo.text);
     const [isChanged, setIsChanged] = useState(false)
 
-    const {changeComplete, changeText, removeTodo} = useContext(Context)
+    const {patchTodos, changeComplete, changeText, removeTodo} = useContext(Context)
 
     function handleChange(e) {
         setInput(e.target.value)
@@ -17,14 +17,19 @@ function TodoItem({todo}) {
     }
 
     function handleBlur() {
-        changeText(todo.id, input)
+        patchTodos(todo._id, input, todo.completed)
+        changeText(todo._id, input)
         setIsChanged(false)
     }
 
-    const done = todo.completed ? 'done' : '';
     return (
-        <li className={`todo_item ${done}`}>
-            <span className='state' onClick={changeComplete.bind(null, todo.id)}/>
+        <li className={`todo_item ${todo.completed === 'true' ? 'done' : ''}`}>
+            <span className='state' 
+                onClick={()=> { 
+                    patchTodos(todo._id, todo.input, todo.completed === 'true' ? 'false' : 'true')
+                    changeComplete.bind(null, todo._id) 
+                }
+            }/>
             { isChanged ? (
                     <input value={input} 
                         onChange={handleChange}
@@ -39,7 +44,7 @@ function TodoItem({todo}) {
                 )
             }
             
-            <button className="delete" onClick={removeTodo.bind(null, todo.id)}> &times;</button>
+            <button className="delete" onClick={removeTodo.bind(null, todo._id)}> &times;</button>
         </li>
     )
 }
