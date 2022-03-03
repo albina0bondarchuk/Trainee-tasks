@@ -12,7 +12,7 @@ function _delete(request, response) {
         body += chunk.toString();
     })
     request.on('end', chunk => {
-        let params = body
+        let params = JSON.parse(body)
         Todos.findByIdAndDelete(params.id).then(todo => {
             if(!todo) {
                 response.statusCode = 404

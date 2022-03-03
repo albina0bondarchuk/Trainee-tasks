@@ -31,7 +31,7 @@ const server = http.createServer((request, response) => {
         patch(request, response)
     } 
 
-    if (request.method === 'DELETE') {
+    if (request.method === 'DELETE' && request.url === '/todos') {
         _delete(request, response)
     }
 })

@@ -3,7 +3,7 @@ import { Context } from '../context';
 
 export function AddTodo() {
     const [input, setInput] = useState('')
-    const {addTodo} = useContext(Context)
+    const {addTodo, postTodo} = useContext(Context)
 
     function handleChange(e) {
         setInput(e.target.value)
@@ -13,6 +13,7 @@ export function AddTodo() {
         e.preventDefault();
 
         if (input.trim()) {
+            postTodo(input)
             addTodo(input);
             setInput('')
         } 

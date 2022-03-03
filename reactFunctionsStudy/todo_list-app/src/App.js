@@ -64,18 +64,21 @@ function App() {
     })
   }
   
-  async function addTodo(text) {
-    let token = localStorage.getItem('authorization')
+  async function postTodo(text) {
+    let token = localStorage.getItem('token')
+ 
     await axios.post('http://localhost:8000/todos',{
         text: text
       }, {
         headers: {
             'Content-type': 'application/json;charset=utf-8',
             'Accept': 'application/json',
-            'Authorization': `${token}`
+            'Authorization': token
         }
     })
+  }
 
+  function addTodo(text) {
     setTodos([
       ...todos,
       {
@@ -108,16 +111,20 @@ function App() {
     )
   }
 
-  async function removeTodo(id) {
-    await axios.delete('http://localhost:8000/todos', {
-        id: id
+  async function deleteTodo(id) {
+    const res = await axios.delete('http://localhost:8000/todos', {
+        data: {
+          id: id
+        }
       }, {
           headers: {
               'Content-type': 'application/json;charset=utf-8',
               'Accept': 'application/json',
           }
     })
-    
+  }
+
+  function removeTodo(id) {
     setTodos(
       todos.filter(todo => todo._id !== id)
     )
@@ -129,7 +136,7 @@ function App() {
 
   let content = authorization ?  (
     <Context.Provider value={{
-      patchTodos, changeComplete, changeText, removeTodo, addTodo, filterTodos
+      patchTodos, changeComplete, changeText, removeTodo, deleteTodo, addTodo, postTodo, filterTodos
     }}>
       <div className='container'>
         <TodoContainer 

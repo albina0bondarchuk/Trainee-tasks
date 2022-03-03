@@ -6,7 +6,7 @@ function TodoItem({todo}) {
     const [input, setInput] = useState(todo.text);
     const [isChanged, setIsChanged] = useState(false)
 
-    const {patchTodos, changeComplete, changeText, removeTodo} = useContext(Context)
+    const {patchTodos, changeComplete, changeText, removeTodo, deleteTodo} = useContext(Context)
 
     function handleChange(e) {
         setInput(e.target.value)
@@ -27,7 +27,7 @@ function TodoItem({todo}) {
             <span className='state' 
                 onClick={()=> { 
                     patchTodos(todo._id, todo.input, todo.completed === 'true' ? 'false' : 'true')
-                    changeComplete.bind(null, todo._id) 
+                    changeComplete(todo._id) 
                 }
             }/>
             { isChanged ? (
@@ -44,7 +44,10 @@ function TodoItem({todo}) {
                 )
             }
             
-            <button className="delete" onClick={removeTodo.bind(null, todo._id)}> &times;</button>
+            <button className="delete" onClick={() => {
+                deleteTodo(todo._id)
+                removeTodo(todo._id)
+            }}> &times;</button>
         </li>
     )
 }
