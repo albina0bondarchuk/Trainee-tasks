@@ -1,55 +1,18 @@
 import {useState, useEffect} from 'react'
 import axios from 'axios' 
+import { connect } from 'react-redux'
 import {Context} from './context'
 import {TodoContainer} from './ TodoComponents/TodoContainer'
-import {TodoStatistic} from './ TodoComponents/TodoStatistic'
+import TodoStatistic from './ TodoComponents/TodoStatistic'
 import {LogInContainer} from './ TodoComponents/LogInContainer'
+import{ getTodos} from './redux/actions'
 
 
-function App() {
-  const [authorization, setAuthorization] = useState(false);
-  const [todos, setTodos] = useState([]);
-  const [filter, setFilter] = useState('all')
+function App({ getTodos, isSuccess }) {
 
   useEffect(()=>{
     localStorage.clear()
   }, [])
-
-  useEffect(()=>{
-    getTodos()
-  }, [authorization])
-
-  async function completeAuthorization(login, password, callback) {
-    const res = await axios.post('http://localhost:8000/login', {
-          login: login,
-          password: password
-      }, {
-        headers: {
-          'Content-type': 'application/json;charset=utf-8',
-          'Accept': 'application/json',
-        }
-      }
-    )
-
-    if (res.headers.autorization) {
-      localStorage.setItem('token', res.headers.autorization);
-      setAuthorization(!!res.headers.autorization) 
-    } else { 
-      callback()
-    }
-  }
-
-  async function getTodos() {
-    let token = localStorage.getItem('token')
-    const res = await axios('http://localhost:8000/todos', {
-        headers: {
-            'Authorization': `${token}`
-        }
-    })
-
-    setTodos(res.data);
-    
-  }
 
   async function patchTodos(id, text, completed) {
     const res = await axios.patch('http://localhost:8000/todos', {
@@ -78,39 +41,6 @@ function App() {
     })
   }
 
-  function addTodo(text) {
-    setTodos([
-      ...todos,
-      {
-        _id: Date.now(),
-        text,
-        completed: false
-      }
-    ])
-  }
-
-  function changeComplete(id) {
-    setTodos(
-      todos.map(todo => {
-        if(todo._id === id) {
-          todo.completed = todo.completed === 'true' ? 'false' : 'true'
-        }
-        return todo
-      })
-    )
-  }
-
-  function changeText(id, value) {
-    setTodos(
-      todos.map(todo => {
-        if(todo._id === id) {
-          todo.text = value
-        }
-        return todo
-      })
-    )
-  }
-
   async function deleteTodo(id) {
     const res = await axios.delete('http://localhost:8000/todos', {
         data: {
@@ -124,42 +54,44 @@ function App() {
     })
   }
 
-  function removeTodo(id) {
-    setTodos(
-      todos.filter(todo => todo._id !== id)
-    )
-  }
-
-  function filterTodos(filter) {
-    setFilter(filter)
-  }
-
-  let content = authorization ?  (
-    <Context.Provider value={{
-      patchTodos, changeComplete, changeText, removeTodo, deleteTodo, addTodo, postTodo, filterTodos
-    }}>
-      <div className='container'>
-        <TodoContainer 
-          todos = {todos}
-          filter = {filter}
-        />
-        <TodoStatistic 
-          todos = {todos}
-          filter = {filter}
-        /> 
-    </div>
-    </Context.Provider>
+  // let content = authorization ?  (
+  //   <Context.Provider value={{
+  //     patchTodos, deleteTodo, postTodo
+  //   }}>
+  //     <div className='container'>
+  //       <TodoContainer />
+  //       <TodoStatistic /> 
+  //   </div>
+  //   </Context.Provider>
     
-  ) : (
-    <Context.Provider value={{completeAuthorization}}>
-      <div className='container'>
-        <LogInContainer/> 
-      </div>
-    </Context.Provider>
-  )
+  // ) : (
+  //   <Context.Provider value={{completeAuthorization}}>
+  //     <div className='container'>
+  //       <LogInContainer/> 
+  //     </div>
+  //   </Context.Provider>
+  // )
   
-  return content
+  return (
+    <div className='container'>
+      {
+        !isSuccess ? 
+        <LogInContainer/> :
+        <div>
+          <TodoContainer />
+          <TodoStatistic /> 
+        </div>
+      }
+    </div>
+  )
 }
 
+const mapStatetoProps = state => ({
+  isSuccess: state.login.isSuccess
+})
 
-export default App;
+const mapDispatchToProps = {
+  getTodos
+}
+
+export default connect(mapStatetoProps, mapDispatchToProps)(App);

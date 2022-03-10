@@ -1,12 +1,12 @@
-import {useState, useContext} from "react";
-import { Context } from "../context";
+import { useState, useContext } from "react";
+import { connect } from "react-redux";
+import { changeComplete, changeText, removeTodo } from '../redux/actions'
 
 
-function TodoItem({todo}) {
+function TodoItem({todo, changeComplete, changeText, removeTodo}) {
+    console.log(todo);
     const [input, setInput] = useState(todo.text);
     const [isChanged, setIsChanged] = useState(false)
-
-    const {patchTodos, changeComplete, changeText, removeTodo, deleteTodo} = useContext(Context)
 
     function handleChange(e) {
         setInput(e.target.value)
@@ -17,16 +17,17 @@ function TodoItem({todo}) {
     }
 
     function handleBlur() {
-        patchTodos(todo._id, input, todo.completed)
+        // patchTodos(todo._id, input, todo.completed)
         changeText(todo._id, input)
         setIsChanged(false)
     }
 
+    const className = todo.completed === 'true' ? 'todo_item done' : 'todo_item'
     return (
-        <li className={`todo_item ${todo.completed === 'true' ? 'done' : ''}`}>
+        <li className={className}>
             <span className='state' 
-                onClick={()=> { 
-                    patchTodos(todo._id, todo.input, todo.completed === 'true' ? 'false' : 'true')
+                onClick={() => { 
+                    // patchTodos(todo._id, todo.input, todo.completed === 'true' ? 'false' : 'true')
                     changeComplete(todo._id) 
                 }
             }/>
@@ -45,16 +46,17 @@ function TodoItem({todo}) {
             }
             
             <button className="delete" onClick={() => {
-                deleteTodo(todo._id)
+                // deleteTodo(todo._id)
                 removeTodo(todo._id)
             }}> &times;</button>
         </li>
     )
 }
 
-// TodoItem.propTypes = {
-//     todo : PropTypes.object.isRequired,
-//     changeState : PropTypes.func.isRequired,
-// }
+const mapDispatchToProps = {
+    changeComplete,
+    changeText,
+    removeTodo
+}
 
-export {TodoItem}
+export default connect(null, mapDispatchToProps)(TodoItem)

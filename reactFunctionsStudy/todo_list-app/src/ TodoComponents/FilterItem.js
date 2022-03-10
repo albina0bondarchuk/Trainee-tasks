@@ -1,15 +1,22 @@
-import {useState, useContext} from "react";
-import { Context } from "../context";
+import { connect } from "react-redux";
+import { filterTodos } from '../redux/actions'
 
-export function FilterItem({filter, active}) {
-    const [name, setName] = useState(filter)
-    const {filterTodos} = useContext(Context)
-
-    const classList = name === active ? 'active' : ''
+function FilterItem({filterName, filter}) {
+    const classList = filterName === filter ? 'active' : ''
     return (
         <p 
             className={classList} 
-            onClick={filterTodos.bind(null, name)}
-        >{name}</p>
+            onClick={filterTodos.bind(null, filterName)}
+        >{filterName}</p>
     )
 }
+
+const mapDispatchToProps = {
+    filterTodos
+}
+
+const mapStateToProps = state => ({
+    filter: state.todos.filter
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(FilterItem)

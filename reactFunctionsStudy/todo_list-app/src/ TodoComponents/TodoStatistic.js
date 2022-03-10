@@ -1,14 +1,13 @@
-import {FilterList} from './FilterList'
+import FilterList from './FilterList'
+import { connect } from 'react-redux'
 
 
-export function TodoStatistic({todos, filter}) {
+function TodoStatistic({todos}) {
     return (
         <div className='todo_statistic'>
             <p>total: <span>{todos.length}</span></p>
 
-            <FilterList 
-                filter={filter}
-            />
+            <FilterList/>
 
             <p>completed: <span>{
                 todos.filter(todo => todo.completed==='true').length
@@ -16,3 +15,9 @@ export function TodoStatistic({todos, filter}) {
         </div>
     )
 }
+
+const mapStateToProps = state => ({
+    todos: state.todos.todos,
+})
+
+export default connect(mapStateToProps)(TodoStatistic)

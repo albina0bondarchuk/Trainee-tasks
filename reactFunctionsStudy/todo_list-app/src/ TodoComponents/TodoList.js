@@ -1,7 +1,8 @@
-import {TodoItem} from "./TodoItem"
+import { connect } from "react-redux"
+import TodoItem from "./TodoItem"
 
 function TodoList({ todos, filter }) {
-    
+    console.log(todos);
     function filteredTodos(filter='all', todos) {
         if(filter === 'completed') {
             return todos.filter(todo => todo.completed==='true')
@@ -19,8 +20,8 @@ function TodoList({ todos, filter }) {
                 filteredTodos(filter, todos)
                     .map(todo => {
                         return <TodoItem 
-                            todo={todo} 
-                            key={todo._id} 
+                            key={todo._id}
+                            todo={todo}  
                         />
                     })
             }
@@ -28,4 +29,10 @@ function TodoList({ todos, filter }) {
     )
 }
 
-export {TodoList}
+
+const mapStateToProps = state => ({
+    todos: state.todos.todos,
+    filter: state.todos.filter
+})
+
+export default connect(mapStateToProps)(TodoList)

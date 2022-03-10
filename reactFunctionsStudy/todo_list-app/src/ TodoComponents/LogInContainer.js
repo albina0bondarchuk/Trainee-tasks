@@ -1,4 +1,4 @@
-import {LogInForm} from './LogInForm'
+import LogInForm from './LogInForm'
 
 export function LogInContainer() {
     return (

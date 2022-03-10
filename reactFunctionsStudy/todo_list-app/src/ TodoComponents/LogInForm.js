@@ -1,34 +1,19 @@
 import {useState, useContext, useEffect} from 'react'
+import { connect } from 'react-redux'
 import { Context } from '../context'
-import { LogInInput } from './LogInInput'
+import LogInInput from './LogInInput'
+import { saveInput, authorization } from '../redux/actions'
 
-export function LogInForm() {
-    const [authorization, setAuthorization] = useState({
-        login: '',
-        password: ''
-    })
-    const [errorMessage, setErrorMessage] = useState('')
-
-    const {completeAuthorization} = useContext(Context)
-
+function LogInForm( { authorizationData, validationError, saveInput, authorization} ) {
     function handleUserInput(e) {
         const name = e.target.name;
         const value = e.target.value;
-        setAuthorization({
-            ...authorization,
-            [name]: value
-        });
-    }
-
-    function errorMessageCreate(text) {
-        setErrorMessage(text)
+        saveInput(name, value)
     }
 
     function handleSubmit(e) {
         e.preventDefault();
-        completeAuthorization(authorization.login, authorization.password, () => {
-            errorMessageCreate('incorrect login or password'); 
-        })
+        authorization(authorizationData.login, authorizationData.password)
     }
 
     return (
@@ -37,18 +22,16 @@ export function LogInForm() {
                 inputName = 'login'
                 inputType = 'text'
                 handleUserInput = {handleUserInput}
-                errorMessageCreate = {errorMessageCreate}
             />
             <LogInInput
                 inputName = 'password'
                 inputType = 'password'
                 handleUserInput = {handleUserInput}
-                errorMessageCreate = {errorMessageCreate}
             /> 
 
-            <span className='message_box'>{errorMessage}</span>
+            <span className='message_box'>{validationError}</span>
 
-            { authorization.login && authorization.password ? (
+            { authorizationData.login && authorizationData.password ? (
                 <button type="submit" className='login_submit'>Submit</button>
                 ) : (
                     <button type="submit" disabled className='login_submit'>Submit</button>
@@ -58,3 +41,16 @@ export function LogInForm() {
         </form>
     )
 }
+
+
+const mapStatetoProps = state => ({
+    authorizationData: state.login.authorizationData,
+    validationError: state.login.validationError
+})
+
+const mapDispatchToProps = {
+    saveInput,
+    authorization,
+}
+
+export default connect(mapStatetoProps, mapDispatchToProps)(LogInForm)

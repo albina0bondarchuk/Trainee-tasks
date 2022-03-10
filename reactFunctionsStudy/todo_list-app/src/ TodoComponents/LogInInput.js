@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { emptyInput } from "../redux/actions";
 
 
-export function LogInInput({inputName, inputType, handleUserInput, errorMessageCreate}) {
+function LogInInput({inputName, inputType, handleUserInput, emptyInput}) {
     const [isEmpty, setIsEmty] = useState(false) 
 
     useEffect(()=>{
         if (isEmpty) {
-            errorMessageCreate('all fields must be filled')
-        } else {
-            errorMessageCreate('')
-        }
+            emptyInput()
+        }  
     }, [isEmpty])
 
     function handleBlur(e) {
@@ -31,3 +31,9 @@ export function LogInInput({inputName, inputType, handleUserInput, errorMessageC
         />
     )
 }
+
+const mapDispatchToProps = {
+    emptyInput,
+}
+
+export default connect(null, mapDispatchToProps)(LogInInput)
