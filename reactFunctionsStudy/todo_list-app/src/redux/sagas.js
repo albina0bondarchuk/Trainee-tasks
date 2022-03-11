@@ -2,6 +2,7 @@ import {call, put, all, takeEvery} from 'redux-saga/effects'
 import axios from 'axios'
 import { addTodo, changeComplete, changeText, failedAuthorization, getTodos, removeTodo, successAuthorization } from './actions'
 import { ASYNC_ADD_TODO, AUTHORIZATION, ASYNC_DELETE_TODO, ASYNC_CHANGE_COMPLETE, ASYNC_CHANGE_TEXT } from './types'
+import { loginUrl, todosUrl } from '../url'
 
 export function* sagaWatcher() {
     yield all([
@@ -31,7 +32,7 @@ function* authorizationWorker({payload: {login, password}}) {
 }
 
 async function postUserSaga(login, password) {
-    const res = await axios.post('http://localhost:8000/login', {
+    const res = await axios.post(loginUrl, {
             login: login,
             password: password
         }, {
@@ -51,7 +52,7 @@ function* getTodosWorker() {
 
 async function getTodosSaga() {
     let token = localStorage.getItem('token')
-    const res = await axios('http://localhost:8000/todos', {
+    const res = await axios(todosUrl, {
         headers: {
             'Authorization': `${token}`
         }
@@ -72,7 +73,7 @@ function* addTodoWorker({payload: {text}}) {
 async function postTodoSaga(text) {
     let token = localStorage.getItem('token')
  
-    await axios.post('http://localhost:8000/todos',{
+    await axios.post(todosUrl,{
         text: text
       }, {
         headers: {
@@ -93,7 +94,7 @@ function* deleteTodoWorker({payload: {id}}) {
 }
 
 async function deleteTodoSaga(id) {
-    await axios.delete('http://localhost:8000/todos', {
+    await axios.delete(todosUrl, {
         data: {
           id: id
         }
@@ -124,7 +125,7 @@ function* changeTextWorker({payload: {id, text, completed}}) {
 }
 
 async function patchTodos(id, text, completed) {
-    await axios.patch('http://localhost:8000/todos', {
+    await axios.patch(todosUrl, {
         id: id,
         text: text,
         completed: completed
