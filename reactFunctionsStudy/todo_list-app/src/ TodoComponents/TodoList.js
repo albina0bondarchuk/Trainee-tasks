@@ -1,9 +1,14 @@
+import { useMemo } from "react";
 import { connect } from "react-redux"
 import TodoItem from "./TodoItem"
 
 function TodoList({ todos, filter }) {
-    console.log(todos);
-    function filteredTodos(filter='all', todos) {
+    
+    // function filteredTodos(filter='all', todos) {
+        
+    // }
+
+    const filteredTodos = useMemo(()=>{
         if(filter === 'completed') {
             return todos.filter(todo => todo.completed==='true')
         }
@@ -12,13 +17,12 @@ function TodoList({ todos, filter }) {
         } 
 
         return todos
-    }
+    },[todos, filter])
 
     return (
         <ul className="todo_list">
             {
-                filteredTodos(filter, todos)
-                    .map(todo => {
+                filteredTodos.map(todo => {
                         return <TodoItem 
                             key={todo._id}
                             todo={todo}  

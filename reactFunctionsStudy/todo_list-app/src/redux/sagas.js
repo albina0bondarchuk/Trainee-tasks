@@ -1,13 +1,16 @@
 import {call, put, all, takeEvery} from 'redux-saga/effects'
 import axios from 'axios'
-import { failedAuthorization, getTodos, successAuthorization } from './actions'
-import { AUTHORIZATION, GET_TODOS } from './types'
+import { addTodo, changeComplete, changeText, failedAuthorization, getTodos, removeTodo, successAuthorization } from './actions'
+import { ASYNC_ADD_TODO, AUTHORIZATION, ASYNC_DELETE_TODO, ASYNC_CHANGE_COMPLETE, ASYNC_CHANGE_TEXT } from './types'
 
 export function* sagaWatcher() {
     yield all([
-        call(onAuthorizationStart),
-        // call(onRegisterSuccess),
-      ]);
+        onAuthorizationStart(), 
+        onAddTodoStart(), 
+        onDeleteTodoStart(),
+        onChangeCompletedStart(),
+        onChangeTextStart()
+    ])
 }
 
 function* onAuthorizationStart() {
@@ -56,3 +59,79 @@ async function getTodosSaga() {
 
     return res.data
 }
+
+function* onAddTodoStart() {
+    yield takeEvery(ASYNC_ADD_TODO, addTodoWorker)
+}
+
+function* addTodoWorker({payload: {text}}) {
+    yield postTodoSaga(text)
+    yield put(addTodo(text))
+}
+
+async function postTodoSaga(text) {
+    let token = localStorage.getItem('token')
+ 
+    await axios.post('http://localhost:8000/todos',{
+        text: text
+      }, {
+        headers: {
+            'Content-type': 'application/json;charset=utf-8',
+            'Accept': 'application/json',
+            'Authorization': token
+        }
+    })
+}
+
+function* onDeleteTodoStart() {
+    yield takeEvery(ASYNC_DELETE_TODO, deleteTodoWorker)
+}
+
+function* deleteTodoWorker({payload: {id}}) {
+    yield deleteTodoSaga(id)
+    yield put(removeTodo(id))
+}
+
+async function deleteTodoSaga(id) {
+    await axios.delete('http://localhost:8000/todos', {
+        data: {
+          id: id
+        }
+      }, {
+          headers: {
+              'Content-type': 'application/json;charset=utf-8',
+              'Accept': 'application/json',
+          }
+    })
+}
+
+function* onChangeCompletedStart() {
+    yield takeEvery(ASYNC_CHANGE_COMPLETE, changeCompletedWorker)
+}
+
+function* changeCompletedWorker({payload: {id, text, completed}}) {
+    yield patchTodos(id, text, completed)
+    yield put(changeComplete(id))
+}
+
+function* onChangeTextStart() {
+    yield takeEvery(ASYNC_CHANGE_TEXT, changeTextWorker)
+}
+
+function* changeTextWorker({payload: {id, text, completed}}) {
+    yield patchTodos(id, text, completed)
+    yield put(changeText(id, text))
+}
+
+async function patchTodos(id, text, completed) {
+    await axios.patch('http://localhost:8000/todos', {
+        id: id,
+        text: text,
+        completed: completed
+      }, {
+          headers: {
+              'Content-type': 'application/json;charset=utf-8',
+              'Accept': 'application/json',
+          },
+    })
+  }

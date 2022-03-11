@@ -20,20 +20,18 @@ export const todosReducer = (state = initialState, action) => {
             return {
                 ...state,
                 todos: state.todos.map(todo => {
-                    if(todo._id === action.payload.id) {
-                      todo.completed = todo.completed === 'true' ? 'false' : 'true'
-                    }
-                    return todo
+                    return todo._id === action.payload.id ? {
+                        ...todo, completed: todo.completed === 'true' ? 'false' : 'true'
+                    } : todo
                   })
             }
         case CHANGE_TEXT:
             return {
                 ...state,
                 todos: state.todos.map(todo => {
-                    if(todo._id === action.payload.id) {
-                      todo.text = action.payload.text
-                    }
-                    return todo
+                    return todo._id === action.payload.id ? {
+                      ...todo, text: action.payload.text
+                    } : todo
                   })
             }
         case REMOVE_TODO:

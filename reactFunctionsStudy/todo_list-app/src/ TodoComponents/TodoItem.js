@@ -1,10 +1,9 @@
 import { useState, useContext } from "react";
 import { connect } from "react-redux";
-import { changeComplete, changeText, removeTodo } from '../redux/actions'
+import { asyncChangeComplete, asyncDeleteTodo, asyncChangeText } from '../redux/actions'
 
 
-function TodoItem({todo, changeComplete, changeText, removeTodo}) {
-    console.log(todo);
+function TodoItem({todo, asyncChangeComplete, asyncChangeText, asyncDeleteTodo}) {
     const [input, setInput] = useState(todo.text);
     const [isChanged, setIsChanged] = useState(false)
 
@@ -17,19 +16,17 @@ function TodoItem({todo, changeComplete, changeText, removeTodo}) {
     }
 
     function handleBlur() {
-        // patchTodos(todo._id, input, todo.completed)
-        changeText(todo._id, input)
+        asyncChangeText(todo._id, input, todo.completed)
         setIsChanged(false)
     }
 
     const className = todo.completed === 'true' ? 'todo_item done' : 'todo_item'
+
     return (
         <li className={className}>
-            <span className='state' 
-                onClick={() => { 
-                    // patchTodos(todo._id, todo.input, todo.completed === 'true' ? 'false' : 'true')
-                    changeComplete(todo._id) 
-                }
+            <span className='state'
+                onClick={
+                    asyncChangeComplete.bind(null, todo._id, todo.text, todo.completed === 'true' ? 'false' : 'true')
             }/>
             { isChanged ? (
                     <input value={input} 
@@ -46,17 +43,16 @@ function TodoItem({todo, changeComplete, changeText, removeTodo}) {
             }
             
             <button className="delete" onClick={() => {
-                // deleteTodo(todo._id)
-                removeTodo(todo._id)
+                asyncDeleteTodo(todo._id)
             }}> &times;</button>
         </li>
     )
 }
 
 const mapDispatchToProps = {
-    changeComplete,
-    changeText,
-    removeTodo
+    asyncChangeComplete,
+    asyncChangeText,
+    asyncDeleteTodo
 }
 
 export default connect(null, mapDispatchToProps)(TodoItem)

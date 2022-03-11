@@ -17,6 +17,12 @@ body {
   margin: 0 auto;
 }
 
+.container>div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .todo_container, .login_container {
   width: 400px;
   margin: 40px auto 20px;

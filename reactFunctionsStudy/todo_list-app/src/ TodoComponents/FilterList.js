@@ -5,13 +5,13 @@ export default function FilterList() {
     return (
         <div className="filter_container">
             <FilterItem 
-                filter='all'
+                filterName='all'
             />
             <FilterItem
-                filter='active'
+                filterName='active'
             />
             <FilterItem
-                filter='completed'
+                filterName='completed'
             />
         </div>
     )

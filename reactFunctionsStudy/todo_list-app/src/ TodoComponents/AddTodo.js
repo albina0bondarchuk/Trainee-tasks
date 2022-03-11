@@ -1,9 +1,9 @@
 import {useState, useContext} from 'react'
 import { Context } from '../context';
 import { connect } from 'react-redux';
-import { addTodo } from '../redux/actions'
+import { asyncAddTodo } from '../redux/actions'
 
-function AddTodo({addTodo}) {
+function AddTodo({asyncAddTodo}) {
     const [input, setInput] = useState('')
 
     function handleChange(e) {
@@ -15,7 +15,7 @@ function AddTodo({addTodo}) {
 
         if (input.trim()) {
             // postTodo(input)
-            addTodo(input)
+            asyncAddTodo(input)
             setInput('')
         } 
     }
@@ -29,7 +29,7 @@ function AddTodo({addTodo}) {
 }
 
 const mapDispatchToProps = {
-    addTodo,
+    asyncAddTodo,
 }
 
 export default connect(null, mapDispatchToProps)(AddTodo)

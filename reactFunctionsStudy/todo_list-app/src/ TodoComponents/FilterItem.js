@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { filterTodos } from '../redux/actions'
 
-function FilterItem({filterName, filter}) {
+function FilterItem({filterName, filter, filterTodos}) {
     const classList = filterName === filter ? 'active' : ''
     return (
         <p 
