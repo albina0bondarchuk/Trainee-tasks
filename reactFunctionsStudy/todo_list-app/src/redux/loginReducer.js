@@ -1,7 +1,8 @@
 import { FAILED_AUTHORIZATION, SUCCESS_AUTHORIZATION } from "./action_types";
 
 const initialState = {
-    isSuccess: false
+    isSuccess: false,
+    authorizationError: ''
 }
 
 export const loginReducer = (state = initialState, action) => {
@@ -13,7 +14,10 @@ export const loginReducer = (state = initialState, action) => {
             }
 
         case FAILED_AUTHORIZATION:
-            return state
+            return {
+                ...state,
+                authorizationError: 'incorrect login or password'
+            }
         default:
             return state
     }

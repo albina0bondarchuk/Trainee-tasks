@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
-import styled from 'styled-components'
-import {useFormik} from 'formik'
+import styled, {css} from 'styled-components'
+import {Field, FormikProvider, useFormik} from 'formik'
 import * as Yup from 'yup';
 import LogInInput from './LogInInput'
 import { authorization } from '../redux/actions'
@@ -38,9 +38,21 @@ const LoginSubmit = styled.button`
     }
 `
 
+const StyledField = styled(Field)`
+    border: 1px solid ${props => props.borderColor};
+    height: 30px;
+    min-width: 200px;
+    border-radius: 7px;
+    padding: 5px;
+
+    &:first-child {
+        margin-bottom: 20px;
+    }
+` 
+
 export default function LogInForm() {
     const dispatch = useDispatch()
-    const isSuccess = useSelector(state => state.login.isSuccess)
+    const authorizationError = useSelector(state => state.login.authorizationError)
 
     const formik = useFormik({
         initialValues: {
@@ -56,29 +68,25 @@ export default function LogInForm() {
         }
     })
 
-    const authorizationData = useSelector(state => state.login.authorizationData)
-    const validationError = useSelector(state => state.login.validationError) 
-
     return (
+        <FormikProvider value={formik}>
         <LoginForm onSubmit={formik.handleSubmit}>
-            <LogInInput
-                inputName = 'login'
-                inputType = 'text'
-                handleChange = {formik.handleChange}
-                handleBlur = {formik.handleBlur}
+            <StyledField
+                name = 'login'
+                type = 'text'
+                placeholder = 'login'
                 value = {formik.values.login}
-                isEmpty = {!!formik.errors.login}
+                borderColor = {formik.errors.login ? 'red' : 'rgba(131,58,180,1)'}
             />
-            <LogInInput
-                inputName = 'password'
-                inputType = 'password'
-                handleChange = {formik.handleChange}
-                handleBlur = {formik.handleBlur}
+            <StyledField
+                name = 'password'
+                type = 'password'
+                placehoder = 'password'
                 value = {formik.values.password}
-                isEmpty = {!!formik.errors.password}
+                borderColor = {formik.errors.password ? 'red' : 'rgba(131,58,180,1)'}
             /> 
 
-            <MessageBox>{ formik.errors.login || formik.errors.password || '' }</MessageBox>
+            <MessageBox>{ formik.errors.login || formik.errors.password || authorizationError || ''}</MessageBox>
 
             { formik.isValid ? 
                 <LoginSubmit type="submit">Submit</LoginSubmit> : 
@@ -86,5 +94,6 @@ export default function LogInForm() {
             }
             
         </LoginForm>
+        </FormikProvider>
     )
 }
