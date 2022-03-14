@@ -1,10 +1,26 @@
+import styled from 'styled-components'
 import LogInForm from './LogInForm'
 
-export function LogInContainer() {
+const LoginContainer = styled.div`
+    width: 400px;
+    margin: 40px auto 20px;
+    border-radius: 20px;
+    background-color: #fff;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
+const LoginHeading = styled.h1`
+    color: rgb(38, 12, 56);
+`
+
+export default function LogInContainer() {
     return (
-        <div className="login_container">
-            <h1 className='login_heading'>Sign in</h1>
+        <LoginContainer>
+            <LoginHeading>Sign in</LoginHeading>
             <LogInForm/>
-        </div>
+        </LoginContainer>
     )
 }

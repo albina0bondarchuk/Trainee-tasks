@@ -1,4 +1,4 @@
-import { ADD_TODO, CHANGE_COMPLETE, CHANGE_TEXT, FILTER_TODO, GET_TODOS, REMOVE_TODO } from "./types";
+import { ADD_TODO, CHANGE_COMPLETE, CHANGE_TEXT, FILTER_TODO, GET_TODOS, REMOVE_TODO } from "./action_types";
 
 const initialState = {
     todos: [],

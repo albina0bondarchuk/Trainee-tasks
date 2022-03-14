@@ -1,9 +1,73 @@
-import { useState, useContext } from "react";
-import { connect } from "react-redux";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import styled from "styled-components";
 import { asyncChangeComplete, asyncDeleteTodo, asyncChangeText } from '../redux/actions'
 
 
-function TodoItem({todo, asyncChangeComplete, asyncChangeText, asyncDeleteTodo}) {
+const TodoLi = styled.li`
+    list-style-type: none;
+    background: rgba(131,58,180,1);
+    color: #fff;
+    min-width: 200px;
+    padding: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    position: relative;
+`
+
+const State = styled.div`
+    width: 15px;
+    height: 15px;
+    margin-right: 15px;
+    background-color: ${props => props.completed === 'true' ? 'rgba(252,176,69,1)' : '#fff'};
+    order: -1;
+`
+const Text = styled.input.attrs(props => ({
+    value: props.value
+}))`
+    color: ${props => props.completed === 'true' ? 'rgb(170, 170, 170);' : '#fff'};
+    text-decoration: ${props => props.completed === 'true' ? 'line-through' : 'none'};
+    background: none;
+    border: 0;
+    outline: -webkit-focus-ring-color auto 0px;
+
+    &:focus-visible {
+        background: none;
+        border: 0;
+        outline: -webkit-focus-ring-color auto 0px;
+    }
+
+    &::placeholder {
+        color:#fff
+    }
+
+    &:read-only {
+        cursor: pointer;
+    }
+    `
+
+const Delete = styled.button`
+    color: #fff;
+    background: none;
+    border: 0;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+
+    &:hover {
+        color: rgba(253,29,29,1);
+    }
+`
+
+export default function TodoItem({todo}) {
+    
+
+    const dispatch = useDispatch()
+
     const [input, setInput] = useState(todo.text);
     const [isChanged, setIsChanged] = useState(false)
 
@@ -16,43 +80,38 @@ function TodoItem({todo, asyncChangeComplete, asyncChangeText, asyncDeleteTodo})
     }
 
     function handleBlur() {
-        asyncChangeText(todo._id, input, todo.completed)
+        dispatch(asyncChangeText(todo._id, input, todo.completed))
         setIsChanged(false)
     }
 
-    const className = todo.completed === 'true' ? 'todo_item done' : 'todo_item'
+    const className = todo.completed === 'true' ? 'done' : ''
 
     return (
-        <li className={className}>
-            <span className='state'
-                onClick={
-                    asyncChangeComplete.bind(null, todo._id, todo.text, todo.completed === 'true' ? 'false' : 'true')
-            }/>
+        <TodoLi className={className}>
+            <State
+                completed={todo.completed}
+                onClick={dispatch.bind(null, asyncChangeComplete(todo._id, todo.text, todo.completed === 'true' ? 'false' : 'true'))}/>
             { isChanged ? (
-                    <input value={input} 
+                    <Text 
+                        value={input} 
+                        completed={todo.completed}
                         onChange={handleChange}
                         onBlur={handleBlur}
                     />
                 ) : (
-                    <input readOnly 
+                    <Text readOnly 
                         value={input} 
+                        completed={todo.completed}
                         onChange={handleChange} 
                         onDoubleClick={handleDoubleClick}
                     />
                 )
             }
             
-            <button className="delete" onClick={() => {
-                asyncDeleteTodo(todo._id)
-            }}> &times;</button>
-        </li>
+            <Delete 
+                className="delete" 
+                onClick={dispatch.bind(null, asyncDeleteTodo(todo._id))}
+            > &times;</Delete>
+        </TodoLi>
     )
 }
-
-const mapDispatchToProps = {
-    asyncChangeComplete,
-    asyncChangeText,
-    asyncDeleteTodo
-}
-
-export default connect(null, mapDispatchToProps)(TodoItem)

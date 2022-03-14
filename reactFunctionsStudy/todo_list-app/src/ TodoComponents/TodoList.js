@@ -1,12 +1,17 @@
 import { useMemo } from "react";
-import { connect } from "react-redux"
+import { useSelector } from "react-redux"
+import styled from "styled-components";
 import TodoItem from "./TodoItem"
 
-function TodoList({ todos, filter }) {
-    
-    // function filteredTodos(filter='all', todos) {
-        
-    // }
+
+const TodoUl = styled.ul`
+    margin-top: 40px;
+    padding: 0;
+`
+
+export default function TodoList() {
+    const todos = useSelector(state => state.todos.todos)
+    const filter = useSelector(state => state.todos.filter)
 
     const filteredTodos = useMemo(()=>{
         if(filter === 'completed') {
@@ -20,7 +25,7 @@ function TodoList({ todos, filter }) {
     },[todos, filter])
 
     return (
-        <ul className="todo_list">
+        <TodoUl>
             {
                 filteredTodos.map(todo => {
                         return <TodoItem 
@@ -29,14 +34,6 @@ function TodoList({ todos, filter }) {
                         />
                     })
             }
-        </ul>
+        </TodoUl>
     )
 }
-
-
-const mapStateToProps = state => ({
-    todos: state.todos.todos,
-    filter: state.todos.filter
-})
-
-export default connect(mapStateToProps)(TodoList)

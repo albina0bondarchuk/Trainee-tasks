@@ -1,56 +1,90 @@
-import {useState, useContext, useEffect} from 'react'
-import { connect } from 'react-redux'
-import { Context } from '../context'
+import { useDispatch, useSelector } from 'react-redux'
+import styled from 'styled-components'
+import {useFormik} from 'formik'
+import * as Yup from 'yup';
 import LogInInput from './LogInInput'
-import { saveInput, authorization } from '../redux/actions'
+import { authorization } from '../redux/actions'
 
-function LogInForm( { authorizationData, validationError, saveInput, authorization} ) {
-    function handleUserInput(e) {
-        const name = e.target.name;
-        const value = e.target.value;
-        saveInput(name, value)
+
+const LoginForm = styled.form`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`
+
+const MessageBox = styled.span`
+    color: red;
+    margin: 10px;
+    font-size: 14px;
+`
+
+const LoginSubmit = styled.button`
+    border: 1px solid rgba(131,58,180,1);
+    background: none;
+    color: rgb(175, 107, 214);
+    border-radius: 7px;
+    padding: 10px 25px;
+    margin-top: 30px;
+
+    &:hover {
+        background-color: rgba(131,58,180,1);
+        color: #fff;
     }
 
-    function handleSubmit(e) {
-        e.preventDefault();
-        authorization(authorizationData.login, authorizationData.password)
+    &:disabled {
+        border: 1px solid rgba(131,58,180,1);
+        background: none;
+        color: rgb(175, 107, 214)
     }
+`
+
+export default function LogInForm() {
+    const dispatch = useDispatch()
+    const isSuccess = useSelector(state => state.login.isSuccess)
+
+    const formik = useFormik({
+        initialValues: {
+            login: '',
+            password: '',
+        },
+        validationSchema: Yup.object({
+            login: Yup.string().required('all fields must be filled'),
+            password: Yup.string().required('all fields must be filled')
+        }),
+        onSubmit: values => {
+            dispatch(authorization(values.login, values.password))
+        }
+    })
+
+    const authorizationData = useSelector(state => state.login.authorizationData)
+    const validationError = useSelector(state => state.login.validationError) 
 
     return (
-        <form onSubmit={handleSubmit}>
+        <LoginForm onSubmit={formik.handleSubmit}>
             <LogInInput
                 inputName = 'login'
                 inputType = 'text'
-                handleUserInput = {handleUserInput}
+                handleChange = {formik.handleChange}
+                handleBlur = {formik.handleBlur}
+                value = {formik.values.login}
+                isEmpty = {!!formik.errors.login}
             />
             <LogInInput
                 inputName = 'password'
                 inputType = 'password'
-                handleUserInput = {handleUserInput}
+                handleChange = {formik.handleChange}
+                handleBlur = {formik.handleBlur}
+                value = {formik.values.password}
+                isEmpty = {!!formik.errors.password}
             /> 
 
-            <span className='message_box'>{validationError}</span>
+            <MessageBox>{ formik.errors.login || formik.errors.password || '' }</MessageBox>
 
-            { authorizationData.login && authorizationData.password ? (
-                <button type="submit" className='login_submit'>Submit</button>
-                ) : (
-                    <button type="submit" disabled className='login_submit'>Submit</button>
-                )
+            { formik.isValid ? 
+                <LoginSubmit type="submit">Submit</LoginSubmit> : 
+                <LoginSubmit type="submit" disabled>Submit</LoginSubmit>
             }
             
-        </form>
+        </LoginForm>
     )
 }
-
-
-const mapStatetoProps = state => ({
-    authorizationData: state.login.authorizationData,
-    validationError: state.login.validationError
-})
-
-const mapDispatchToProps = {
-    saveInput,
-    authorization,
-}
-
-export default connect(mapStatetoProps, mapDispatchToProps)(LogInForm)

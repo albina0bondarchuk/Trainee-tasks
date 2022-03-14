@@ -1,7 +1,7 @@
 import {call, put, all, takeEvery} from 'redux-saga/effects'
 import axios from 'axios'
 import { addTodo, changeComplete, changeText, failedAuthorization, getTodos, removeTodo, successAuthorization } from './actions'
-import { ASYNC_ADD_TODO, AUTHORIZATION, ASYNC_DELETE_TODO, ASYNC_CHANGE_COMPLETE, ASYNC_CHANGE_TEXT } from './types'
+import { ASYNC_ADD_TODO, AUTHORIZATION, ASYNC_DELETE_TODO, ASYNC_CHANGE_COMPLETE, ASYNC_CHANGE_TEXT } from './action_types'
 import { loginUrl, todosUrl } from '../url'
 
 export function* sagaWatcher() {

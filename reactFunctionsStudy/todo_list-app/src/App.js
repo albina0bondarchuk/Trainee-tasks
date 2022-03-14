@@ -1,38 +1,44 @@
 import { useEffect } from 'react'
-import axios from 'axios' 
-import { connect } from 'react-redux'
-import {TodoContainer} from './ TodoComponents/TodoContainer'
+import { useSelector } from 'react-redux'
+import TodoContainer from './ TodoComponents/TodoContainer'
 import TodoStatistic from './ TodoComponents/TodoStatistic'
-import {LogInContainer} from './ TodoComponents/LogInContainer'
-import{ getTodos} from './redux/actions'
+import LogInContainer from './ TodoComponents/LogInContainer'
+import styled from 'styled-components'
 
 
-function App({ isSuccess }) {
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+`
+
+const Todos = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
+function App() {
+  const isSuccess = useSelector(state => state.login.isSuccess)
 
   useEffect(()=>{
     localStorage.clear()
   }, [])
   
   return (
-    <div className='container'>
+    <Container>
       {
         !isSuccess ? 
         <LogInContainer/> :
-        <div>
+        <Todos>
           <TodoContainer />
           <TodoStatistic /> 
-        </div>
+        </Todos>
       }
-    </div>
+    </Container>
   )
 }
 
-const mapStatetoProps = state => ({
-  isSuccess: state.login.isSuccess
-})
-
-const mapDispatchToProps = {
-  
-}
-
-export default connect(mapStatetoProps, mapDispatchToProps)(App);
+export default App;

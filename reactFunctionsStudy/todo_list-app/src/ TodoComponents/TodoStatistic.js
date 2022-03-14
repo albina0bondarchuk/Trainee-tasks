@@ -1,10 +1,21 @@
 import FilterList from './FilterList'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
+import styled from 'styled-components'
 
 
-function TodoStatistic({todos}) {
+const StatisticContainer = styled.div`
+    color: rgb(244, 203, 250);
+    display: flex;
+    justify-content: space-between;
+    width: 400px;
+    align-items: center;
+`
+
+export default function TodoStatistic() {
+    const todos = useSelector(state => state.todos.todos)
+
     return (
-        <div className='todo_statistic'>
+        <StatisticContainer>
             <p>total: <span>{todos.length}</span></p>
 
             <FilterList/>
@@ -12,12 +23,6 @@ function TodoStatistic({todos}) {
             <p>completed: <span>{
                 todos.filter(todo => todo.completed==='true').length
             }</span></p>
-        </div>
+        </StatisticContainer>
     )
 }
-
-const mapStateToProps = state => ({
-    todos: state.todos.todos,
-})
-
-export default connect(mapStateToProps)(TodoStatistic)

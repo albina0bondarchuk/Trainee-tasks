@@ -1,9 +1,14 @@
+import styled from "styled-components"
 import FilterItem from "./FilterItem"
 
 
+const FilterContainer = styled.div`
+    display: flex;
+`
+
 export default function FilterList() {
     return (
-        <div className="filter_container">
+        <FilterContainer>
             <FilterItem 
                 filterName='all'
             />
@@ -13,7 +18,7 @@ export default function FilterList() {
             <FilterItem
                 filterName='completed'
             />
-        </div>
+        </FilterContainer>
     )
 }
 

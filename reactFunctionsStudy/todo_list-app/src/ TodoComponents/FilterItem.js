@@ -1,22 +1,35 @@
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
 import { filterTodos } from '../redux/actions'
 
-function FilterItem({filterName, filter, filterTodos}) {
-    const classList = filterName === filter ? 'active' : ''
+
+const Item = styled.p`
+    margin-right: 10px;
+    font-size: 14px;
+    color: ${ props => props.textColor };
+    font-weight: ${ props => props.fontWeight };
+
+    &:last-child {
+        margin-right: 0px;
+    }
+
+    &:hover {
+        color: rgb(26, 25, 25);
+        font-weight: bold;
+    }
+`
+
+export default function FilterItem({filterName}) {
+    const filter = useSelector(state => state.todos.filter)
+    const dispatch = useDispatch()
+
+    const isActive = filterName === filter
+
     return (
-        <p 
-            className={classList} 
-            onClick={filterTodos.bind(null, filterName)}
-        >{filterName}</p>
+        <Item 
+            textColor={isActive ? 'rgb(26, 25, 25)' : 'rgb(244,203,250)'} 
+            fontWeight={isActive ? 'bold' : 'normal'}
+            onClick={dispatch.bind(null, filterTodos(filterName))}
+        >{filterName}</Item>
     )
 }
-
-const mapDispatchToProps = {
-    filterTodos
-}
-
-const mapStateToProps = state => ({
-    filter: state.todos.filter
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(FilterItem)
