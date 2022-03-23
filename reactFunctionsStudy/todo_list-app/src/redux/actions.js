@@ -38,11 +38,12 @@ function failedAuthorization() {
     }
 }
 
-function addTodo(text) {
+function addTodo(text, id) {
     return {
         type: ADD_TODO,
         payload: {
-            text
+            text,
+            id
         }
     }
 }

@@ -42,7 +42,7 @@ async function postUserSaga(login, password) {
         }
         })
 
-        return res.headers.autorization
+        return res.headers.authorization
 }
 
 function* getTodosWorker() {
@@ -66,14 +66,14 @@ function* onAddTodoStart() {
 }
 
 function* addTodoWorker({payload: {text}}) {
-    yield postTodoSaga(text)
-    yield put(addTodo(text))
+    const id = yield postTodoSaga(text)
+    yield put(addTodo(text, id))
 }
 
 async function postTodoSaga(text) {
-    let token = localStorage.getItem('token')
+    const token = localStorage.getItem('token')
  
-    await axios.post(todosUrl,{
+    const result = await axios.post(todosUrl,{
         text: text
       }, {
         headers: {
@@ -82,6 +82,7 @@ async function postTodoSaga(text) {
             'Authorization': token
         }
     })
+    return result
 }
 
 function* onDeleteTodoStart() {
