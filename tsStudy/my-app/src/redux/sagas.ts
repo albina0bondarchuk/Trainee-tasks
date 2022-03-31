@@ -26,10 +26,10 @@ export function* sagaWatcher() {
 }
 
 function* onAuthorizationStart() {
-    yield takeEvery(LoginTypes.AUTHORIZATION as any, authorizationWorker)
+    yield takeEvery(LoginTypes.AUTHORIZATION, authorizationWorker)
 }
 
-function* authorizationWorker({payload: {login, password}} : {payload:{login:string, password:string}}) {
+function* authorizationWorker({payload: {login, password}} : {type: typeof LoginTypes.AUTHORIZATION, payload:{login:string, password:string}}) {
     const token:ResponseGenerator = yield postUserSaga(login, password)
 
     if (token) {
@@ -73,10 +73,10 @@ async function getTodosSaga() {
 }
 
 function* onAddTodoStart() {
-    yield takeEvery(TodoTypes.ASYNC_ADD_TODO  as any, addTodoWorker)
+    yield takeEvery(TodoTypes.ASYNC_ADD_TODO, addTodoWorker)
 }
 
-function* addTodoWorker({payload: {text}} : {payload:{text:string}}) {
+function* addTodoWorker({payload: {text}} : {type: typeof TodoTypes.ASYNC_ADD_TODO, payload:{text:string}}) {
     const id:ResponseGenerator = yield postTodoSaga(text)
     yield put(addTodo(text, id as string))
 }
@@ -97,10 +97,10 @@ async function postTodoSaga(text: string) {
 }
 
 function* onDeleteTodoStart() {
-    yield takeEvery(TodoTypes.ASYNC_DELETE_TODO as any, deleteTodoWorker)
+    yield takeEvery(TodoTypes.ASYNC_DELETE_TODO, deleteTodoWorker)
 }
 
-function* deleteTodoWorker({payload: {id}}: {payload:{id:string}}) {
+function* deleteTodoWorker({payload: {id}}: {type: typeof TodoTypes.ASYNC_DELETE_TODO, payload:{id:string}}) {
     yield deleteTodoSaga(id)
     yield put(removeTodo(id))
 }
@@ -119,19 +119,19 @@ async function deleteTodoSaga(id: string) {
 }
 
 function* onChangeCompletedStart() {
-    yield takeEvery(TodoTypes.ASYNC_CHANGE_COMPLETE as any, changeCompletedWorker)
+    yield takeEvery(TodoTypes.ASYNC_CHANGE_COMPLETE, changeCompletedWorker)
 }
 
-function* changeCompletedWorker({payload: {id, text, completed}} :{payload: {id:string, text:string, completed:string}} ) {
+function* changeCompletedWorker({payload: {id, text, completed}} :{type: typeof TodoTypes.ASYNC_CHANGE_COMPLETE, payload: {id:string, text:string, completed:string}} ) {
     yield patchTodos(id, text, completed)
     yield put(changeComplete(id))
 }
 
 function* onChangeTextStart() {
-    yield takeEvery(TodoTypes.ASYNC_CHANGE_TEXT as any, changeTextWorker)
+    yield takeEvery(TodoTypes.ASYNC_CHANGE_TEXT, changeTextWorker)
 }
 
-function* changeTextWorker({payload: {id, text, completed}}:{payload: {id:string, text:string, completed:string}}) {
+function* changeTextWorker({payload: {id, text, completed}}:{type: typeof TodoTypes.ASYNC_CHANGE_TEXT, payload: {id:string, text:string, completed:string}}) {
     yield patchTodos(id, text, completed)
     yield put(changeText(id, text))
 }
