@@ -7,17 +7,21 @@ import TodoItem from "./TodoItem"
 
 export default function TodoList() {
     const {todos, filter} = useTypedSelector(state => state.todos)
+    const {currentPage, todosPerPage} = useTypedSelector(state => state.pagination)
+    const lastTodoIndex = currentPage * todosPerPage;
+    const firstTodoIndex = lastTodoIndex - todosPerPage;
+    const currentTodos = todos.slice(firstTodoIndex, lastTodoIndex)
 
     const filteredTodos = useMemo(() => {
         if(filter === Filters.completed) {
-            return todos.filter(todo => todo.completed==='true')
+            return currentTodos.filter(todo => todo.completed==='true')
         }
         if(filter === Filters.active) {
-            return todos.filter(todo => todo.completed==='false')
+            return currentTodos.filter(todo => todo.completed==='false')
         } 
-
-        return todos
-    },[todos, filter])
+        
+        return currentTodos
+    },[todos, filter, currentPage])
 
     return (
         <TodoUl>

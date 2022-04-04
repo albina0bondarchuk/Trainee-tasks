@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import AddTodo from './AddTodo';
+import Pagination from './Pagination';
 import TodoList from './TodoList';
 
 const TodoContainer: React.FC = () => {
@@ -9,6 +10,7 @@ const TodoContainer: React.FC = () => {
             <TodoHeading>To do list</TodoHeading>
             <AddTodo/>
             <TodoList/>
+            <Pagination/>
         </TodosContainer>
     )
 }
